@@ -8,19 +8,48 @@ from enigma import Enigma
 
 # Usage
 plugboard = PlugBoard([('A', 'B'), ('C', 'D'), ('E', 'F'), ('G', 'H'), ('I', 'J')])
+
+# Define a wiring string that includes all printable ASCII characters
+wiring = string.printable
+
 rotors = [
-    Rotor('EKMFLGDQVZNTOWYHXUSPAIBRCJ', 0, 0),
-    Rotor('AJDKSIRUXBLHWTMCQGZNPYFVOE', 0, 0),
-    Rotor('BDFHJLCPRTXVZNYEIWGAKMUSQO', 0, 0),
-    Rotor('ESOVPZJAYQUIRHXLNFTGKDCMWB', 0, 0)  # Fourth rotor
+    Rotor(wiring, 0, 0),
+    Rotor(wiring, 0, 0),
+    Rotor(wiring, 0, 0),
+    Rotor(wiring, 0, 0)
 ]
-reflector = Reflector('YRUHQSLDPXNGOKMIEBFZCWVJAT')
+
+def generate_reciprocal_mapping(chars):
+    # Shuffle the characters
+    random.shuffle(chars)
+    
+    # Split the characters into two halves
+    half_length = len(chars) // 2
+    first_half = chars[:half_length]
+    second_half = chars[half_length:]
+    
+    # Create a reciprocal mapping between the two halves
+    mapping = {first_half[i]: second_half[i] for i in range(half_length)}
+    mapping.update({second_half[i]: first_half[i] for i in range(half_length)})
+    
+    # Create a string of characters according to the mapping
+    wiring = ''.join([mapping[char] for char in chars])
+    
+    return wiring
+
+# Create a list of all printable ASCII characters
+all_chars = list(string.digits + string.ascii_letters + string.punctuation)
+
+# Generate a reciprocal mapping
+reflector_wiring = generate_reciprocal_mapping(all_chars)
+
+reflector = Reflector(reflector_wiring)
 enigma = Enigma(plugboard, rotors, reflector)
 
 adaptive_enigma = AdaptiveEnigma(enigma)
 
 # Encrypt a message
-plaintext = "Your mudda gae"
+plaintext = "message1"
 plaintext = plaintext.replace(" ", "").upper()
 print(f"Original Text: {plaintext}")
 ciphertext = "".join(adaptive_enigma.encrypt(char) for char in plaintext)
