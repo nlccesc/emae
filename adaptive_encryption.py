@@ -30,6 +30,38 @@ class AdaptiveEnigma:
             next_char = chr((ord(char) + random.randint(2, 5)) % 256)  
             self.adaptive_plugboard[char], self.adaptive_plugboard[next_char] = next_char, self.adaptive_plugboard[char]
 
+def generate_huffman_codes(self, root, code, huffman_codes):
+        if root is None:
+            return
+
+        if root.char is not None:
+            huffman_codes[root.char] = code
+
+        self.generate_huffman_codes(root.left, code + '0', huffman_codes)
+        self.generate_huffman_codes(root.right, code + '1', huffman_codes)
+
+    def huffman_encode(self, message):
+        root = self.build_huffman_tree(message)
+        huffman_codes = {}
+        self.generate_huffman_codes(root, '', huffman_codes)
+        return ''.join(huffman_codes[char] for char in message)
+
+    def huffman_decode(self, encoded_message, root):
+        decoded_message = []
+        current = root
+
+        for bit in encoded_message:
+            if bit == '0':
+                current = current.left
+            else:  # bit == '1'
+                current = current.right
+
+            if current.char is not None:
+                decoded_message.append(current.char)
+                current = root
+
+        return ''.join(decoded_message)
+    
     def encrypt(self, char):
         self.char_count[char] = self.char_count.get(char, 0) + 1
         if len(self.history) > 10:  
