@@ -12,12 +12,11 @@ plugboard = PlugBoard([('A', 'B'), ('C', 'D'), ('E', 'F'), ('G', 'H'), ('I', 'J'
 # Define a wiring string that includes all printable ASCII characters
 wiring = string.printable
 
+num_rotors = random.randint(1, len(string.printable))
 rotors = [
-    Rotor(wiring, 0, 0),
-    Rotor(wiring, 0, 0),
-    Rotor(wiring, 0, 0),
-    Rotor(wiring, 0, 0)
-]
+    Rotor(wiring, 0, 0) for _ in range(num_rotors)
+         ]
+
 
 def generate_reciprocal_mapping(chars):
     # Shuffle the characters
