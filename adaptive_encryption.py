@@ -13,41 +13,11 @@ class AdaptiveEnigma:
         self.adaptive_plugboard, rotor_positions = self.initial_state
         for rotor, position in zip(self.enigma.rotors, rotor_positions):
             rotor.set_position(position)
-# primality test
-    def is_prime(self, n, k=5):
-        if n <= 1 or (n == 2):
+# simple div algo
+    def is_prime_div_algo(self, n):
+        if n <= 1 or (n % 2 == 0 and n > 2): 
             return False
-        if n == 2 or n == 3:
-            return True
-
-        # Write (n - 1) as 2^r * d
-        r, d = 0, n - 1
-        while d % 2 == 0:
-            r += 1
-            d //= 2
-
-        # Witness loop
-        for _ in range(k):
-            a = random.randint(2, n - 1)
-            x = pow(a, d, n)
-            if x == 1 or x == n - 1:
-                continue
-            for _ in range(r - 1):
-                x = pow(x, 2, n)
-                if x == n - 1:
-                    break
-            else:
-                return False
-        return True
-
-    def generate_prime_number(self, length):
-        while True:
-            # generate random number of given bit length
-            prime_candidate = random.getrandbits(length)
-            # set the MSB and LSB to 1, MSB ensures the bit length, LSB ensures the number is odd
-            prime_candidate |= (1 << length - 1) | 1
-            if self.is_prime(prime_candidate):
-                return prime_candidate
+        return all(n % i for i in range(3, int(n**0.5) + 1, 2))
 
     def complex_predictive_logic(self, char):
         pattern_found = False
